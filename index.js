@@ -62,66 +62,6 @@ app.use(express.static(__dirname + "/"));
 
 
 
-var removeId=function(sceneId,openId,callback){
-	var Array=Bmob.Object.extend("array");
-	var query=new Bmob.Query(Array);
-	query.equalTo("scene",sceneId);
-	query.first({success:function(object){
-		if(!object){
-			log.error({openId:openId,sceneId:sceneId},"query 0 list in removeId");
-			return;
-		}
-		object.remove("list",openId);
-		object.save(null,{success:function(result){
-			log.debug({audienceNumber:result.attributes.list.length,openId:openId},"AudienceNumber after removeId");
-			if(callback){
-				callback();
-			}
-		},error:function(error){
-			log.error({code:"201",openId:openId},"object saved failed in removeId");
-		}});
-	},error:function(err){
-		log.error({code:"202",openId:openId,sceneId:sceneId},"query failed in removeId")
-	}});
-}
-
-var addId=function(sceneId,openId,callback){
-	var Array=Bmob.Object.extend("array");
-	var query=new Bmob.Query(Array);
-	query.equalTo("scene",sceneId);
-	query.first({success:function(object){
-		if(!object){
-			log.error({openId:openId,sceneId:sceneId},"query 0 list in addId");
-			return;
-		}
-		object.addUnique("list",openId);
-		object.save(null,{success:function(result){
-			log.debug({audienceNumber:result.attributes.list.length,openId:openId},"AudienceNumber after addId");
-			if(callback){
-				callback();
-			}
-			
-		},error:function(error){
-			log.error({code:"201",openId:openId},"object saved failed in addId");
-			
-		}});
-	},error:function(err){
-		log.error({code:"202",openId:openId,sceneId:sceneId},"query failed in addId")
-	}});
-}
-
-/*
-addId(98,"sunkuo",function(){
-	console.log("add success");
-});
-
-
-removeId(98,"sunkuo",function(){
-	console.log("remove success");
-});
-*/
-
-
 var sendText = function(openId,content,time) {
 	api.sendText(openId, content, function(err, result) {
 		if (err) {
